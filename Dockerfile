@@ -6,7 +6,7 @@ ENV SLEEP=300\
     USER=""\
     PASS=""\
     URL="wrong.domain.provided"\
-    MUTE=true \
+    MUTE=false \
 #docker build --env-file ./.env
     IN=""\
     OUT=""
@@ -17,7 +17,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # yakshaving to get to nextcloudcmd
 RUN apt-get update && apt-get install -y software-properties-common \
     && add-apt-repository ppa:nextcloud-devs/client && apt update \
-    && apt -y install nextcloud-client
+    && apt -y install nextcloud-client && apt -y install rsync
 
 # run loop
 ADD init.sh /init.sh

@@ -1,25 +1,36 @@
 #!/bin/bash
-IN=("ss1w", "2", "3", "4");
-OUT=("2", "3", "4", "0");
-echo ${#IN[@]}
-echo ${#OUT[@]}
+
+#parse to string
+read -a IN <<< $IN
+read -a OUT <<< $OUT
+
+#validation
 if [ ${#IN[@]} -ne ${#OUT[@]} ];
 then
   echo "[ERR] IN/OUT mismatch"
   exit 1
 fi
 
-#while true
-#do
+
+mkdir sync
+while true
+do
+#mkdir sync
+	#	nextcloud $( [ "$MUTE"==true ] && echo "--silent" ) \
+	#	 	-u ${USER} -p ${PASS} \
+	#		/nextcloud/${IN[$i]} \
+	#		 ${URL}/remote.php/webdav/${OUT[$i]}
 	for ((i = 0 ; i <= ${#IN[@]}-1 ; i++)); do
 		echo "Sync ${IN[$i]} to ${OUT[$i]}"
-		nextcloudcmd $( [ "$MUTE" ] && echo "--silent" ) \
-			-u ${USER} -p ${PASS} \
-			/media/nextcloud/${IN[$i]} \
-			 ${URL}/nextcloud/remote.php/webdav/${OUT[$i]}
+		rsync -r --delete ./media/${IN[$i]}/ ./sync/${OUT[$i]}/
 	done;
-	#nextcloudcmd $( [ "$MUTE" == true ] && echo "--silent" )\
-	#	-u $USER -p $PASS /media/nextcloud/ $URL\
+	nextcloudcmd $( [ "$MUTE" -eq true ] && echo "--silent" ) \
+		-u ${USER} -p ${PASS} ./sync ${URL}
+	for ((i = 0 ; i <= ${#IN[@]}-1 ; i++)); do
+		echo "Sync ${OUT[$i]} to ${IN[$i]}"
+		rsync -r --delete ./sync/${OUT[$i]}/ ./media/${IN[$i]}/
+	done;
 	echo "Next sync in ${SLEEP}"
 	sleep $SLEEP
-#done
+# rm -rf sync
+done

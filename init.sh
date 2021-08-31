@@ -17,13 +17,13 @@ fi
 
 
 mkdir sync
+for ((i = 0 ; i <= ${#IN[@]}-1 ; i++)); do
+	echo $(date -I'seconds') "- List ${IN[$i]} >> ${OUT[$i]}"
+	unison -batch -confirmbigdel=false ./media/${IN[$i]}/ ./sync/${OUT[$i]}/
+done;
 while true
 do
 #mkdir sync
-	for ((i = 0 ; i <= ${#IN[@]}-1 ; i++)); do
-		echo $(date -I'seconds') "- List ${IN[$i]} >> ${OUT[$i]}"
-		rsync -ru --delete ./media/${IN[$i]}/ ./sync/${OUT[$i]}/
-	done;
 	$( [ "$MUTE" = "false" ] ) && ls sync/ -hR
 	echo $(date -I'seconds') "- Uploading";
 	nextcloudcmd $( [ "$MUTE" = "true" ] && echo "--silent" ) \
@@ -32,9 +32,8 @@ do
 	$( [ "$MUTE" = "false" ] ) && ls sync/ -hR 
 	for ((i = 0 ; i <= ${#IN[@]}-1 ; i++)); do
 		echo $(date -I'seconds') "- Download ${OUT[$i]} << ${IN[$i]}"
-		rsync -ru --delete ./sync/${OUT[$i]}/ ./media/${IN[$i]}/
+		unison -batch -confirmbigdel=false ./sync/${OUT[$i]}/ ./media/${IN[$i]}/
 	done;
 	echo $(date -I'seconds') "- Next sync in ${SLEEP}"
- 	$( [ "$FORCE_REMOVE" = "true" ] ) && rm -rf sync/* 
 	sleep $SLEEP
 done

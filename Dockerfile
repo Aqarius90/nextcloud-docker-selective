@@ -18,7 +18,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt -y install software-properties-common \
     && add-apt-repository ppa:nextcloud-devs/client && apt update \
     && apt -y install nextcloud-client \
-    && apt -y install rsync \
+    && apt -y install unison \
     && rm -rf /var/lib/apt/lists/*
 
 # run loop

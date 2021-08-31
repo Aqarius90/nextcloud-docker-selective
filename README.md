@@ -2,7 +2,9 @@
 
 Point-to-point syncer for nextcloud, based on nextcloudcmd
 
-Partially a workaround of nextcloud's lack of support of simlinks, partially a cmd clone of the desktop "Add Folder Sync Connection". Allows sync of arbitrary folders on host to arbitrary folders on the cloud.
+Partially a workaround of nextcloud's lack of support of simlinks, partially a way to avoid port forwarding, partially a docker/cmd clone of the desktop GUI "Add Folder Sync Connection". Allows sync of arbitrary folders on host to arbitrary folders on the cloud.
+
+Code and issues at: https://github.com/Aqarius90/nextcloud-docker-selective
 
 ## ENV
 
@@ -13,7 +15,6 @@ USER= username
 PASS= password
 MUTE= disable verbose logging, default true
 SLEEP= seconds between sync, default 300
-FORCE_REMOVE= delete everything on the server not listed in OUT, default false
 
 ## Binds
 
@@ -27,9 +28,8 @@ creates binds:
 >
 > $localroot/folder3 -> $server/folder2/folder1
 
-If folders do not exist on the server, they will be created.
-if FORCE_REMOVE=false, not bound items will be ignored, if FORCE_REMOVE=true, **ALL** not bound items will be **DELETED**
+Nonexistant folders will be created. Unlisted folders will be ignored.
 
 ## Example
 
-> docker run -it --rm -e USER=$user -e PASS=$pass --env-file .env -v $(pwd)/localroot:/media nextcloud-docker-selective
+> docker run -it --rm -e USER=$user -e PASS=$pass --env-file .env -v $localroot:/media aqarius90/nextcloudcmd-selective

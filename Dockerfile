@@ -1,5 +1,5 @@
 # must be ubuntu because of RUN args
-FROM ubuntu:latest
+FROM alpine:latest
 LABEL maintainer="https://github.com/Aqarius90/nextcloud-docker-selective"
 
 ENV SLEEP=300\
@@ -15,11 +15,8 @@ ENV SLEEP=300\
 ARG DEBIAN_FRONTEND=noninteractive 
 
 # yakshaving to get to nextcloudcmd
-RUN apt update && apt -y install software-properties-common \
-    && add-apt-repository ppa:nextcloud-devs/client && apt update \
-    && apt -y install nextcloud-client \
-    && apt -y install rsync \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk add nextcloud-client && apk add rsync && apk add bash
+#    && rm -rf /var/lib/apt/lists/*
 
 # run loop
 ADD init.sh /init.sh
